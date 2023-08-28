@@ -1,0 +1,15 @@
+{
+  "name": "bd2-t1-sequelize",
+  "version": "1.0.0",
+  "description": "Trabalho T1 para a disciplina de Banco de Dados II da UNIVALI sobre a implementação do ORM sequelize",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ivan Santos <ivancsantos@hotmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "mysql2": "^3.6.0",
+    "sequelize": "^6.32.1"
+  }
+}
