@@ -1,4 +1,5 @@
 const { test } = require('node:test');
+const prompt = require('prompt-sync')()
 const { Sequelize, DataTypes } = require('sequelize');
 const MYSQL_IP="localhost";
 const MYSQL_LOGIN="root";
@@ -9,11 +10,11 @@ const sequelize = new Sequelize(DATABASE, MYSQL_LOGIN, MYSQL_PASSWORD, {
     dialect: "mysql"
 });
 
-sequelize.authenticate().then(() => {
+/* sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
  }).catch((error) => {
     console.error('Unable to connect to the database: ', error);
- });
+ }); */
 
 const Film = sequelize.define('Film', {
     film_id: {type:  DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false},
@@ -61,7 +62,7 @@ Actor.belongsToMany(Film, {through: FilmActor, foreignKey: 'actor_id'});
 Category.belongsToMany(Film, {through: FilmCategory, foreignKey: 'category_id'});
 
 // Returns all films
-let getAllFilms = async function() {
+async function getAllFilms() {
     try {
         let films = await Film.findAll()
         console.log(films);
@@ -95,7 +96,7 @@ SELECT `Category`.`category_id`, `Category`.`name`, `Category`.`last_update`,
 FROM `category` AS `Category` 
 INNER JOIN `film_category` AS `FilmCategory` ON `Category`.`category_id` = `FilmCategory`.`category_id` 
 AND `FilmCategory`.`film_id` = 1;*/
-let getFilmById = async function(id) {
+async function getFilmById(id) {
     try {
         let films = await Film.findByPk(id)
         let categories = await films.getCategories()
@@ -109,7 +110,7 @@ let getFilmById = async function(id) {
 
 
 // Returns all categories
-let getAllCategories = async function() {
+async function getAllCategories() {
     try {
         let categories = await Category.findAll()
         console.log(categories)
@@ -120,7 +121,7 @@ let getAllCategories = async function() {
 //getAllCategories() 
 
 // Returns a category by specifying its id
-let getCategoryById = async function(id) {
+async function getCategoryById(id) {
     try {
         let categories = await Category.findByPk(id)
         let categoryFilms = await categories.getFilms()
@@ -132,7 +133,7 @@ let getCategoryById = async function(id) {
 //getCategoryById(1)
 
 // Returns all actors
-let getAllActors = async function() {
+async function getAllActors() {
     try {
         let actors = await Actor.findAll()
         console.log(actors)
@@ -143,7 +144,7 @@ let getAllActors = async function() {
 //getAllActors()
 
 // Returns an actor by specifying its id
-let getActorById = async function(id) {
+async function getActorById(id) {
     try {
         let actor = await Actor.findByPk(id)
         let actorFilms = await actor.getFilms();
@@ -153,3 +154,52 @@ let getActorById = async function(id) {
     }
 }
 //getActorById(1)
+
+const displayMenuOptions = function() {
+    console.log("*** CONSULTA ***")
+    console.log("1. Listar todos os filmes")
+    console.log("2. Consultar um filme através de seu id")
+    console.log("3. Listar todas as categorias")
+    console.log("4. Consultar uma categoria através de seu id")
+    console.log("5. Listar todos os atores")
+    console.log("6. Consultar um ator através de seu id")
+    console.log("7. Sair")
+    console.log("")
+}
+
+async function menu() {
+    let option = 0
+    while(option !== 7){
+        displayMenuOptions()
+        option = parseInt(prompt("Selectione uma opção do menu: "))
+        switch(option) {
+            case 1:
+                await getAllFilms()
+                break
+            case 2:
+                promptId = parseInt(prompt("Qual ID deseja consultar? "))
+                await getFilmById(promptId)
+                break
+            case 3:
+                await getAllCategories()
+                break
+            case 4:
+                promptId = parseInt(prompt("Qual ID deseja consultar? "))
+                await getCategoryById(promptId)
+                break
+            case 5:
+                await getAllActors()
+                break
+            case 6:
+                promptId = parseInt(prompt("Qual ID deseja consultar? "))
+                await getActorById(promptId)
+                break
+            case 7:
+                console.log(typeof(option),": ", option)
+            default:
+                console.log(`Opção inválida ${option}!`)
+        }
+    }
+}
+
+menu()
