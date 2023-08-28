@@ -70,7 +70,8 @@ Category.belongsToMany(Film, {through: FilmCategory, foreignKey: 'category_id'})
 async function getAllFilms() {
     try {
         let films = await Film.findAll()
-        console.log(films);
+        console.log(JSON.stringify(films, null, 2) + "\n\n");
+
     } catch (error) {
         console.error("Erro: ", error)
     }
@@ -106,7 +107,10 @@ async function getFilmById(id) {
         let films = await Film.findByPk(id)
         let categories = await films.getCategories()
         let actors = await films.getActors()
-        console.log(films, categories, actors);
+
+        console.log(JSON.stringify(films, null, 2), 
+        JSON.stringify(categories, null, 2),
+        JSON.stringify(actors, null, 2));
     } catch (error) {
         console.error("Erro: ", error)
     }
@@ -118,7 +122,7 @@ async function getFilmById(id) {
 async function getAllCategories() {
     try {
         let categories = await Category.findAll()
-        console.log(categories)
+        console.log(JSON.stringify(categories, null, 2) + "\n\n");
     } catch (error) {
         console.error("Erro: ", error)
     }
@@ -130,7 +134,8 @@ async function getCategoryById(id) {
     try {
         let categories = await Category.findByPk(id)
         let categoryFilms = await categories.getFilms()
-        console.log(categories, categoryFilms)
+        console.log(JSON.stringify(categories, null, 2), 
+        JSON.stringify(categoryFilms, null, 2))
     } catch (error) {
         console.error("Erro: ", error)
     }
@@ -141,7 +146,7 @@ async function getCategoryById(id) {
 async function getAllActors() {
     try {
         let actors = await Actor.findAll()
-        console.log(actors)
+        console.log(JSON.stringify(actors, null, 2) + "\n\n");
     } catch (error) {
         console.error("Erro: ", error)
     }
@@ -153,7 +158,8 @@ async function getActorById(id) {
     try {
         let actor = await Actor.findByPk(id)
         let actorFilms = await actor.getFilms();
-        console.log(actor, actorFilms)
+        console.log(JSON.stringify(actor, null, 2), 
+        JSON.stringify(actorFilms, null, 2))
     } catch (error) {
         console.error("Erro: ", error)
     }
