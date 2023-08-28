@@ -103,13 +103,9 @@ INNER JOIN `film_category` AS `FilmCategory` ON `Category`.`category_id` = `Film
 AND `FilmCategory`.`film_id` = 1;*/
 async function getFilmById(id) {
     try {
-        let films = await Film.findByPk(id)
-        let categories = await films.getCategories()
-        let actors = await films.getActors()
+        let films = await Film.findByPk(id, {include: [Category, Actor]})
 
-        console.log(JSON.stringify(films, null, 2), 
-        JSON.stringify(categories, null, 2),
-        JSON.stringify(actors, null, 2));
+        console.log(JSON.stringify(films, null, 2)) 
     } catch (error) {
         console.error("Erro: ", error)
     }
