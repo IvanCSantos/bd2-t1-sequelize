@@ -76,7 +76,6 @@ async function getAllFilms() {
         console.error("Erro: ", error)
     }
 }
-//getAllFilms()
 
 // Return a film by specifying its id
 // Test SQL Queries:
@@ -115,8 +114,6 @@ async function getFilmById(id) {
         console.error("Erro: ", error)
     }
 }
-//getFilmById(1)
-
 
 // Returns all categories
 async function getAllCategories() {
@@ -127,7 +124,6 @@ async function getAllCategories() {
         console.error("Erro: ", error)
     }
 }
-//getAllCategories() 
 
 // Returns a category by specifying its id
 async function getCategoryById(id) {
@@ -138,7 +134,6 @@ async function getCategoryById(id) {
         console.error("Erro: ", error)
     }
 }
-//getCategoryById(1)
 
 // Returns all actors
 async function getAllActors() {
@@ -149,7 +144,6 @@ async function getAllActors() {
         console.error("Erro: ", error)
     }
 }
-//getAllActors()
 
 // Returns an actor by specifying its id
 async function getActorById(id) {
@@ -160,7 +154,6 @@ async function getActorById(id) {
         console.error("Erro: ", error)
     }
 }
-//getActorById(1)
 
 const displayMenuOptions = function() {
     console.log("*** CONSULTA ***")
