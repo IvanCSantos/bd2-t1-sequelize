@@ -25,9 +25,9 @@ const Film = sequelize.define('Film', {
     film_id: {type:  DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false},
     title: {type: DataTypes.STRING, allowNull: false},
     description: {type: DataTypes.STRING},
-    release_year: {type: DataTypes.DATE},
-    //language_id: {type: DataTypes.STRING, allowNull: false},
-    //original_language_id: {type: DataTypes.STRING, allowNull: false},
+    release_year: {type: DataTypes.STRING},
+    language_id: {type: DataTypes.INTEGER, allowNull: false},
+    original_language_id: {type: DataTypes.INTEGER, allowNull: false},
     rental_duration: {type: DataTypes.INTEGER, allowNull: false},
     rental_rate: {type: DataTypes.DOUBLE, allowNull: false},
     length: {type: DataTypes.INTEGER},
@@ -191,14 +191,94 @@ async function addNewActor() {
     console.log("Adicionando novo ator.")
     let firstName = prompt("Informe o primeiro nome do ator: ")
     let lastName = prompt("Informe o último nome do ator: ")
-    let newActor = {first_name: firstName, last_name: lastName}
-    const createdActor = await Actor.create(newActor)
-    console.log("Novo ator adicionado: " + createdActor.first_name + " " + createdActor.last_name)
-    console.log("")
+
+    const createdActor = await Actor.create({
+        first_name: firstName, 
+        last_name: lastName,
+        }
+    )
+
+    let createRelationships = prompt("Deseja criar associação de filme (y/n)? ")
+    if(createRelationships === "y"){
+        let title = prompt("Informe o título do filme: ")
+        let description = prompt("Informe a descrição do filme: ")
+        let release_year = prompt("Informe o ano de lançamento do filme: ")
+        let rental_duration = prompt("Informe o tempo de locação do filme: ")
+        let rental_rate = prompt("Informe a taxa de locação do filme: ")
+        let length = prompt("Informe o comprimento do filme: ")
+        let language_id = 1
+        let original_language_id = 1
+        let replacement_cost = prompt("Informe o custo de reposição do filme: ")
+        let rating = prompt("Informe o rating do filme: ('G','PG','PG-13','R','NC-17')")
+        let special_features = prompt("Informe os recursos especiais do filme: ")
+        let category = prompt("Informe a categoria do filme: ")
+
+        const createdFilm = await Film.create({
+            title,
+            description,
+            release_year,
+            rental_duration,
+            rental_rate,
+            length,
+            language_id,
+            original_language_id,
+            replacement_cost,
+            rating,
+            special_features
+        })
+    
+        const createdCategory = await Category.create({
+            name: category
+        })
+    
+        await FilmCategory.create({
+            film_id: createdFilm.film_id,
+            category_id: createdCategory.category_id
+        })
+    }
 }
 
-function addNewFilm() {
+async function addNewFilm() {
+    console.log("Adicionando novo filme.")
+    let title = prompt("Informe o título do filme: ")
+    let description = prompt("Informe a descrição do filme: ")
+    let release_year = prompt("Informe o ano de lançamento do filme: ")
+    let rental_duration = prompt("Informe o tempo de locação do filme: ")
+    let rental_rate = prompt("Informe a taxa de locação do filme: ")
+    let length = prompt("Informe o comprimento do filme: ")
+    let language_id = 1
+    let original_language_id = 1
+    let replacement_cost = prompt("Informe o custo de reposição do filme: ")
+    let rating = prompt("Informe o rating do filme: ('G','PG','PG-13','R','NC-17')")
+    let special_features = prompt("Informe os recursos especiais do filme: ")
+    let category = prompt("Informe a categoria do filme: ")
+    
+    
+    const createdFilm = await Film.create({
+        title,
+        description,
+        release_year,
+        rental_duration,
+        rental_rate,
+        length,
+        language_id,
+        original_language_id,
+        replacement_cost,
+        rating,
+        special_features
+    })
 
+    const createdCategory = await Category.create({
+        name: category
+    })
+
+    await FilmCategory.create({
+        film_id: createdFilm.film_id,
+        category_id: createdCategory.category_id
+    })
+
+    console.log("Novo filme criado: " + createdFilm.film_id + " " + createdFilm.title + " " + createdFilm.description)
+    console.log("")
 }
 
 async function addNewCategory() {
@@ -238,6 +318,7 @@ async function menu() {
                 await getActorById(promptId)
                 break
             case 7:
+                await addNewFilm()
                 break
             case 8:
                 await addNewActor()
