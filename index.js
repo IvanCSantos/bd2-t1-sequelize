@@ -1,5 +1,5 @@
 const { test } = require('node:test');
-const prompt = require('prompt-sync')()
+const prompt = require('prompt-sync')({sigint: true})
 const { Sequelize, DataTypes } = require('sequelize');
 const MYSQL_IP="localhost";
 const MYSQL_LOGIN="root";
@@ -9,6 +9,9 @@ const sequelize = new Sequelize(DATABASE, MYSQL_LOGIN, MYSQL_PASSWORD, {
     host: MYSQL_IP, 
     dialect: "mysql"
 });
+
+// The Sakila database is available at
+// https://dev.mysql.com/doc/sakila/en/sakila-installation.html
 
 /* sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
