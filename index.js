@@ -19,17 +19,19 @@ const sequelize = new Sequelize(DATABASE, MYSQL_LOGIN, MYSQL_PASSWORD, {
     console.error('Unable to connect to the database: ', error);
  }); */
 
+ // Sequelize documentation: https://sequelize.org/docs/v6/core-concepts/model-basics/
+
 const Film = sequelize.define('Film', {
     film_id: {type:  DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false},
     title: {type: DataTypes.STRING, allowNull: false},
     description: {type: DataTypes.STRING},
-    release_year: {type: DataTypes.INTEGER},
+    release_year: {type: DataTypes.DATE},
     //language_id: {type: DataTypes.STRING, allowNull: false},
     //original_language_id: {type: DataTypes.STRING, allowNull: false},
     rental_duration: {type: DataTypes.INTEGER, allowNull: false},
-    rental_rate: {type: DataTypes.INTEGER, allowNull: false},
+    rental_rate: {type: DataTypes.DOUBLE, allowNull: false},
     length: {type: DataTypes.INTEGER},
-    replacement_cost: {type: DataTypes.INTEGER, allowNull: false},
+    replacement_cost: {type: DataTypes.DOUBLE, allowNull: false},
     rating: {type: DataTypes.ENUM('G','PG','PG-13','R','NC-17')},
     special_features: {type: DataTypes.STRING},
     last_update: {type: DataTypes.DATE}
