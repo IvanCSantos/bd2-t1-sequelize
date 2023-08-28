@@ -168,13 +168,45 @@ const displayMenuOptions = function() {
     console.log("4. Consultar uma categoria através de seu id")
     console.log("5. Listar todos os atores")
     console.log("6. Consultar um ator através de seu id")
-    console.log("7. Sair")
+    console.log("")
+    console.log("*** CRIAR ***")
+    console.log("7. Adiciona um novo filme")
+    console.log("8. Adiciona um novo ator")
+    console.log("9. Adiciona uma nova categoria")
+    console.log("10. Sair")
+    console.log("")
+}
+
+function promptIdToQuery(){
+    return parseInt(prompt("Qual ID deseja consultar? "))
+}
+
+async function addNewActor() {
+    console.log("Adicionando novo ator.")
+    let firstName = prompt("Informe o primeiro nome do ator: ")
+    let lastName = prompt("Informe o último nome do ator: ")
+    let newActor = {first_name: firstName, last_name: lastName}
+    const createdActor = await Actor.create(newActor)
+    console.log("Novo ator adicionado: " + createdActor.first_name + " " + createdActor.last_name)
+    console.log("")
+}
+
+function addNewFilm() {
+
+}
+
+async function addNewCategory() {
+    console.log("Adicionando uma nova categoria.")
+    let name = prompt("Informe o nome da categoria: ")
+    let newCategory = {name: name}
+    const createdCategory = await Category.create(newCategory)
+    console.log("Nova categoria criada: " + createdCategory.category_id + " " + createdCategory.name)
     console.log("")
 }
 
 async function menu() {
     let option = 0
-    while(option !== 7){
+    while(option !== 10){
         displayMenuOptions()
         option = parseInt(prompt("Selectione uma opção do menu: "))
         switch(option) {
@@ -182,24 +214,32 @@ async function menu() {
                 await getAllFilms()
                 break
             case 2:
-                promptId = parseInt(prompt("Qual ID deseja consultar? "))
+                promptId = promptIdToQuery()
                 await getFilmById(promptId)
                 break
             case 3:
                 await getAllCategories()
                 break
             case 4:
-                promptId = parseInt(prompt("Qual ID deseja consultar? "))
+                promptId = promptIdToQuery()
                 await getCategoryById(promptId)
                 break
             case 5:
                 await getAllActors()
                 break
             case 6:
-                promptId = parseInt(prompt("Qual ID deseja consultar? "))
+                promptId = promptIdToQuery()
                 await getActorById(promptId)
                 break
             case 7:
+                break
+            case 8:
+                await addNewActor()
+                break
+            case 9:
+                await addNewCategory()
+                break
+            case 10:
                 console.log(typeof(option),": ", option)
             default:
                 console.log(`Opção inválida ${option}!`)
