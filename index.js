@@ -1,23 +1,32 @@
 const { test } = require('node:test');
+const fs = require('fs');
+const csv = require('csv-parser');
 const prompt = require('prompt-sync')({sigint: true})
 const { Sequelize, DataTypes } = require('sequelize');
-const MYSQL_IP="localhost";
-const MYSQL_LOGIN="root";
-const MYSQL_PASSWORD="123456";
+const MYSQL_IP="68.64.164.119";
+const MYSQL_LOGIN="admin";
+const MYSQL_PASSWORD="F8aZkomi";
 const DATABASE = "sakila";
 const sequelize = new Sequelize(DATABASE, MYSQL_LOGIN, MYSQL_PASSWORD, {
     host: MYSQL_IP, 
-    dialect: "mysql"
+    port: 18761,
+    dialect: "mysql",
+    pool: {
+        max: 20,
+        min: 0,
+        acquire: 6000000,
+        idle: 10000
+      }
 });
 
 // The Sakila database is available at
 // https://dev.mysql.com/doc/sakila/en/sakila-installation.html
 
-/* sequelize.authenticate().then(() => {
-    console.log('Connection has been established successfully.');
- }).catch((error) => {
-    console.error('Unable to connect to the database: ', error);
- }); */
+//sequelize.authenticate().then(() => {
+ //   console.log('Connection has been established successfully.');
+ //}).catch((error) => {
+ //   console.log('Unable to connect to the database: ', error);
+ //});
 
  // Sequelize documentation: https://sequelize.org/docs/v6/core-concepts/model-basics/
 
@@ -65,6 +74,45 @@ Film.belongsToMany(Actor, {through: FilmActor, foreignKey: 'film_id'});
 Film.belongsToMany(Category, {through: FilmCategory, foreignKey: 'film_id'});
 Actor.belongsToMany(Film, {through: FilmActor, foreignKey: 'actor_id'});
 Category.belongsToMany(Film, {through: FilmCategory, foreignKey: 'category_id'});
+
+const User = sequelize.define('User', {
+    // Colunas da tabela
+    index: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      //autoIncrement: true,
+    },
+    userId: {
+      type: Sequelize.STRING,
+      //allowNull: false,
+    },
+    firstName: {
+      type: Sequelize.STRING,
+      //allowNull: false,
+    },
+    lastName: {
+      type: Sequelize.STRING,
+      //allowNull: false,
+    },
+    sex: {
+      type: Sequelize.STRING,
+    },
+    email: {
+      type: Sequelize.STRING,
+      //allowNull: false,
+      //unique: true,
+    },
+    phone: {
+      type: Sequelize.STRING,
+    },
+    dateOfBirth: {
+      type: Sequelize.STRING,
+    },
+    jobTitle: {
+      type: Sequelize.STRING,
+    },
+  });
 
 // Returns all films
 async function getAllFilms() {
@@ -131,6 +179,9 @@ async function getCategoryById(id) {
     }
 }
 
+
+
+
 // Returns all actors
 async function getAllActors() {
     try {
@@ -164,7 +215,14 @@ const displayMenuOptions = function() {
     console.log("7. Adiciona um novo filme")
     console.log("8. Adiciona um novo ator")
     console.log("9. Adiciona uma nova categoria")
-    console.log("10. Sair")
+    console.log("")
+    console.log("*** Trabalho 2 ***")
+    console.log("10. Criar Tabela User")
+    console.log("11. Insere Users do arquivo CSV")
+    console.log("12. Mostra todos os Users")
+    console.log("13. Busca User por nome")
+
+    console.log("20. Sair")
     console.log("")
 }
 
@@ -277,7 +335,7 @@ async function addNewCategory() {
 
 async function menu() {
     let option = 0
-    while(option !== 10){
+    while(option !== 20){
         displayMenuOptions()
         option = parseInt(prompt("Selectione uma opção do menu: "))
         switch(option) {
@@ -312,6 +370,19 @@ async function menu() {
                 await addNewCategory()
                 break
             case 10:
+                await User.sync()
+                break
+            case 11:
+                await loadUserCsv()
+                break
+            case 12:
+                await getAllUsers()
+                break
+            case 13:
+                nome = prompt("Qual nome deseja consultar? ")
+                await getAllUsersLikeName(nome)
+                break
+            case 20:
                 console.log(typeof(option),": ", option)
             default:
                 console.log(`Opção inválida ${option}!`)
@@ -319,4 +390,94 @@ async function menu() {
     }
 }
 
-menu()
+//Trabalho 2
+
+// Returns all Users
+async function getAllUsers() {
+    try {
+        let users = await User.findAll({})
+        console.log(JSON.stringify(users, null, 2) + "\n\n");
+
+    } catch (error) {
+        console.error("Erro: ", error)
+    }
+}
+
+// Returns all Users with name
+async function getAllUsersLikeName(nome) {
+    try {
+        let users = await User.findAll({
+            where: {
+              firstName: {
+                [Sequelize.Op.like]: `%${nome}%`, // Usando o operador $like
+              },
+            },
+          })
+        console.log(JSON.stringify(users, null, 2) + "\n\n");
+
+    } catch (error) {
+        console.error("Erro: ", error)
+    }
+}
+
+//carrega todos os usuarios
+async function loadUserCsv() {
+    console.log('CSV.');
+
+    await User.destroy({
+        where: {},
+        truncate: true,
+      })
+        .then((rowsDeleted) => {
+          console.log(`Foram deletadas as linhas da tabela User.`);
+        })
+        .catch((error) => {
+          console.error('Erro ao deletar linhas da tabela User:', error);
+        });
+        
+    //await fs.createReadStream('teste.csv')
+    fs.createReadStream('people-100000.csv')
+    .pipe(csv())
+    .on('data',   async (row) => {
+
+      // Inserir os dados na tabela User
+      //Index,User Id,First Name,Last Name,Sex,Email,Phone,Date of birth,Job Title
+      await Object.keys(row).forEach((key) => {
+          row[key] = row[key].replace(/\r?\n$/, '');
+          
+        });
+        //console.log(row)
+        //console.log(row['﻿Index'])
+       // console.log(row['User Id'])
+       // console.log(row['First Name'])
+        //console.log(row['Last Name'])
+        //console.log(row['Sex'])
+        //console.log(row['Email'])
+        //console.log(row['Phone'])
+       // console.log(row['Date of birth'])
+       // console.log(row['Job Title'])
+        await User.create({
+            index: row['﻿Index'],
+            userId: row['User Id'],
+            firstName: row['First Name'],
+            lastName: row['Last Name'],
+            sex: row['Sex'],
+            email: row['Email'],
+            phone: row['Phone'],
+            dateOfBirth: row['Date of birth'],
+            jobTitle: row['Job Title'],
+          })
+            .then((user) => {
+              //console.log(`Usuário inserido: ${user.userId}`);
+            })
+            .catch((error) => {
+                console.error('Erro ao inserir usuário:', error);
+            });
+            
+        });
+        
+    }
+    
+    
+    
+menu();

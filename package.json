@@ -1,5 +1,5 @@
 {
-  "name": "bd2-t1-sequelize",
+  "name": "trabalho2",
   "version": "1.0.0",
   "description": "Trabalho T1 para a disciplina de Banco de Dados II da UNIVALI sobre a implementação do ORM sequelize",
   "main": "index.js",
@@ -9,8 +9,19 @@
   "author": "Ivan Santos <ivancsantos@hotmail.com>",
   "license": "ISC",
   "dependencies": {
-    "mysql2": "^3.6.0",
+    "csv-parser": "^3.0.0",
+    "fs": "^0.0.1-security",
+    "mysql2": "^3.6.1",
+    "node": "^20.6.0",
     "prompt-sync": "^4.2.0",
-    "sequelize": "^6.32.1"
-  }
+    "sequelize": "^6.33.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IvanCSantos/bd2-t1-sequelize.git"
+  },
+  "bugs": {
+    "url": "https://github.com/IvanCSantos/bd2-t1-sequelize/issues"
+  },
+  "homepage": "https://github.com/IvanCSantos/bd2-t1-sequelize#readme"
 }
